@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
-import ContactContainer from './contact-container'
+import ContactContainer from './components/contacts/contact-container'
 import styles from '../css/styles.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
