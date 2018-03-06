@@ -85,7 +85,6 @@ export default class ContactAddEdit extends Component {
         }
     }
     componentWillReceiveProps(newProps) {
-        console.log(newProps.isVisible)
         this.style = {};
         if (!newProps.isVisible) {
             this.style.display = 'none'
@@ -119,7 +118,6 @@ export default class ContactAddEdit extends Component {
     }
 
     render() {
-
 
         return (<div className="panel panel-default padDiv" style={this.style}><h3 className="formContainer">Add/Edit Contact</h3>
             <div class="row padDivSmall">

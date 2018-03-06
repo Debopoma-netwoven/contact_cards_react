@@ -50,7 +50,6 @@ export default class ContactContainer extends Component {
   }
 
   onUpdate(data) {
-    console.log(data);
     var array = this.state.contactList;
     var index = this.state.contactList.map(function (item) { return item.id; })
       .indexOf(data.id);
