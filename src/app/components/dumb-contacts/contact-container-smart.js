@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { render } from 'react-dom';
 import ContactDetailDumb from './contact-dumb';
 import ContactAddEditDumb from './contact-add-edit-dumb'
+import axios from "axios";
 
 export default class ContactContainerSmart extends Component {
     constructor(props) {
@@ -13,19 +14,30 @@ export default class ContactContainerSmart extends Component {
             showDeleteMessage: false,
             deleteIndex: -1,
             contactList: [
-                { id: 1, name: 'Debopoma Chaudhury', company: 'Netwoven', designation: 'Senior Engineer', age: '32 yrs', location: 'Kolkata', image: '../images/dc.png' },
-                { id: 2, name: 'Sanjukta Das', company: 'JP Morgan', designation: 'Project Lead', age: '31 yrs', location: 'Singapore', image: '../images/upload.jpg' },
-                { id: 3, name: 'Suhit Saha', company: 'Prana', designation: 'Technical Producer', age: '31 yrs', location: 'Mumbai', image: '../images/upload.jpg' },
-                { id: 4, name: 'Kumaresh Roy', company: 'Royal Chem', designation: 'CEO', age: '32 yrs', location: 'Kolkata', image: '../images/upload.jpg' }
             ],
-            updateData: { id: 0, name: '', company: '', designation: '', age: '', location: '', image: '' }
+            updateData: { _id: 0, name: '', company: '', designation: '', age: '', location: '', image: '' }
         }
         this.handleDelete = this.handleDelete.bind(this);
     }
+    componentWillMount() {
+        console.log("will mount");
+        axios.get('http://localhost:3000/ContactList')
+            .then((response) => {
+                var arr = [];
+                console.log(response.data)
+                Object.keys(response.data).forEach(function (key) {
+                    arr.push(response.data[key]);
+                });
+                this.setState({ contactList: arr })
+            })
+            .catch((error) => {
+                console.log(error);
+            });
 
+    }
     addForm() {
         this.setState({
-            updateData: { id: 0, name: '', company: '', designation: '', age: '', location: '', image: '' },
+            updateData: { _id: 0, name: '', company: '', designation: '', age: '', location: '', image: '' },
             showForm: true,
             addContact: true
         });
@@ -38,24 +50,31 @@ export default class ContactContainerSmart extends Component {
     }
     deleteContactFinal(e) {
         var array = this.state.contactList;
-        var index = this.state.contactList.map(function (item) { return item.id; })
+        var index = this.state.contactList.map(function (item) { return item._id; })
             .indexOf(this.state.deleteIndex);
+
+        axios.delete("http://localhost:3000/ContactList", {
+            data: { id: this.state.deleteIndex }
+        })
+
         array.splice(index, 1);
         this.setState({ contactList: array, showDeleteMessage: false, deleteIndex: -1 });
+
+
     }
     cancelDeleteContact(e) {
         this.setState({ showDeleteMessage: false, deleteIndex: -1 });
     }
     handleUpdate(id) {
-        var array = this.state.contactList.filter(function (item) { return item.id == id; });
+        var array = this.state.contactList.filter(function (item) { return item._id == id; });
         this.setState({ updateData: array[0], showForm: true, editContact: true });
 
     }
 
     onUpdate(data) {
         var array = this.state.contactList;
-        var index = this.state.contactList.map(function (item) { return item.id; })
-            .indexOf(data.id);
+        var index = this.state.contactList.map(function (item) { return item._id; })
+            .indexOf(data._id);
         array[index] = data;
         this.setState({
             contactList: array,
@@ -63,17 +82,36 @@ export default class ContactContainerSmart extends Component {
             addContact: false,
             editContact: false
         });
+
+        axios.put('http://localhost:3000/ContactList', {
+            updateData: data,
+            id: data._id
+        })
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(err);
+            });
     }
 
     onAdd(data) {
         var array = this.state.contactList;
-        var maxIndex = Math.max.apply(Math, array.map(function (o) { return o.id; }))
-        data.id = maxIndex + 1;
+        var maxIndex = Math.max.apply(Math, array.map(function (o) { return o._id; }))
+        data._id = maxIndex + 1;
         array.push(data);
         this.setState({
             contactList: array, showForm: false, addContact: false,
             editContact: false
         });
+        axios.post('http://localhost:3000/ContactList', data)
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error.response);
+            });
+
     }
     onUpdateField(obj) {
 

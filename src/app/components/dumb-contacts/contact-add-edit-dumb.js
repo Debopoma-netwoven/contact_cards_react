@@ -3,7 +3,7 @@ import React from 'react';
 const ContactAddEditDumb = (props) => {
     function updateContactFinal(id, e) {
         let updatedData = {
-            id: id, name: props.updateData.name,
+            _id: id, name: props.updateData.name,
             company: props.updateData.company, designation: props.updateData.designation,
             age: props.updateData.age, location: props.updateData.location, image: '../images/upload.jpg'
         }
@@ -12,7 +12,7 @@ const ContactAddEditDumb = (props) => {
     }
     function addContactFinal(id, e) {
         let updatedData = {
-            id: id, name: props.updateData.name,
+            _id: id, name: props.updateData.name,
             company: props.updateData.company, designation: props.updateData.designation,
             age: props.updateData.age, location: props.updateData.location, image: '../images/upload.jpg'
         }
@@ -88,9 +88,9 @@ const ContactAddEditDumb = (props) => {
                 <div className="col-sm-4"></div>
                 <div className="col-sm-4">
                     {(props.isAddContact) ?
-                        <button type="button" class="btn-sm" onClick={(e) => addContactFinal(props.updateData.id, e)}>Add</button> : <div></div>}
+                        <button type="button" class="btn-sm" onClick={(e) => addContactFinal(props.updateData._id, e)}>Add</button> : <div></div>}
                     {(props.isEditContact) ?
-                        <button type="button" class="btn-sm" onClick={(e) => updateContactFinal(props.updateData.id, e)}>Update</button> : <div></div>}
+                        <button type="button" class="btn-sm" onClick={(e) => updateContactFinal(props.updateData._id, e)}>Update</button> : <div></div>}
                 </div>
             </div>
         </div>

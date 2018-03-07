@@ -24,10 +24,10 @@ export const ContactDetailDumb = (props) => {
                     </div>
                     <div class="row">
                         <div className="col-sm-7"></div>
-                        <div className="col-sm-2"><button type="button" onClick={(e) =>  props.onUpdate(props.data.id, e.target.value)}>
+                        <div className="col-sm-2"><button type="button" onClick={(e) =>  props.onUpdate(props.data._id, e.target.value)}>
                             <i class="glyphicon glyphicon-pencil"></i>
                         </button></div>
-                        <div className="col-sm-3"><button type="button" onClick={(e) => props.onDelete(props.data.id, e.target.value)}>
+                        <div className="col-sm-3"><button type="button" onClick={(e) => props.onDelete(props.data._id, e.target.value)}>
                             <i class="glyphicon  glyphicon-remove"></i>
                         </button></div>
                     </div>
