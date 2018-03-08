@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { render } from 'react-dom';
 import ContactDetailDumb from './contact-dumb';
 import ContactAddEditDumb from './contact-add-edit-dumb'
-import axios from "axios";
+import axios from 'axios';
 
 export default class ContactContainerSmart extends Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = {
             showForm: false,
             addContact: false,
@@ -19,8 +19,7 @@ export default class ContactContainerSmart extends Component {
         }
         this.handleDelete = this.handleDelete.bind(this);
     }
-    componentWillMount() {
-        console.log("will mount");
+    componentDidMount() {
         axios.get('http://localhost:3000/ContactList')
             .then((response) => {
                 var arr = [];
@@ -49,17 +48,20 @@ export default class ContactContainerSmart extends Component {
 
     }
     deleteContactFinal(e) {
-        var array = this.state.contactList;
-        var index = this.state.contactList.map(function (item) { return item._id; })
-            .indexOf(this.state.deleteIndex);
 
         axios.delete("http://localhost:3000/ContactList", {
             data: { id: this.state.deleteIndex }
         })
-
-        array.splice(index, 1);
-        this.setState({ contactList: array, showDeleteMessage: false, deleteIndex: -1 });
-
+            .then(response => {
+                var array = this.state.contactList;
+                var index = this.state.contactList.map(function (item) { return item._id; })
+                    .indexOf(this.state.deleteIndex);
+                array.splice(index, 1);
+                this.setState({ contactList: array, showDeleteMessage: false, deleteIndex: -1 });
+            })
+            .catch(error => {
+                console.log(error.response);
+            });
 
     }
     cancelDeleteContact(e) {
@@ -72,41 +74,42 @@ export default class ContactContainerSmart extends Component {
     }
 
     onUpdate(data) {
-        var array = this.state.contactList;
-        var index = this.state.contactList.map(function (item) { return item._id; })
-            .indexOf(data._id);
-        array[index] = data;
-        this.setState({
-            contactList: array,
-            showForm: false,
-            addContact: false,
-            editContact: false
-        });
 
         axios.put('http://localhost:3000/ContactList', {
             updateData: data,
             id: data._id
         })
             .then(response => {
-                console.log(response);
+                console.log("updated data");
+                console.log(this.state);
+                console.log(data);
+                var array = this.state.contactList;
+                var index = this.state.contactList.map(o => o._id)
+                    .indexOf(data._id);
+                array[index] = data;
+                this.setState({
+                    contactList: array,
+                    showForm: false,
+                    addContact: false,
+                    editContact: false
+                });
             })
             .catch(error => {
-                console.log(err);
+                console.log(error);
             });
     }
 
     onAdd(data) {
         var array = this.state.contactList;
-        var maxIndex = Math.max.apply(Math, array.map(function (o) { return o._id; }))
+        var maxIndex = Math.max.apply(Math, array.map(o => o._id));
         data._id = maxIndex + 1;
-        array.push(data);
-        this.setState({
-            contactList: array, showForm: false, addContact: false,
-            editContact: false
-        });
         axios.post('http://localhost:3000/ContactList', data)
-            .then(response => {
-                console.log(response);
+            .then(response => {                
+                array.push(data);
+                this.setState({
+                    contactList: array, showForm: false, addContact: false,
+                    editContact: false
+                });
             })
             .catch(error => {
                 console.log(error.response);
@@ -116,31 +119,31 @@ export default class ContactContainerSmart extends Component {
     onUpdateField(obj) {
 
         switch (obj.fieldType) {
-            case "name": {
+            case 'name': {
                 this.setState({
                     updateData: { ... this.state.updateData, name: obj.value }
                 });
                 break;
             }
-            case "company": {
+            case 'company': {
                 this.setState({
                     updateData: { ... this.state.updateData, company: obj.value }
                 });
                 break;
             }
-            case "location": {
+            case 'location': {
                 this.setState({
                     updateData: { ... this.state.updateData, location: obj.value }
                 });
                 break;
             }
-            case "designation": {
+            case 'designation': {
                 this.setState({
                     updateData: { ... this.state.updateData, designation: obj.value }
                 });
                 break;
             }
-            case "age": {
+            case 'age': {
                 this.setState({
                     updateData: { ... this.state.updateData, age: obj.value }
                 });
